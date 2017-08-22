@@ -1,12 +1,15 @@
 package jax.optimalroots.gooseleverage;
 
 import java.awt.Canvas;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
+
+import jax.optimalroots.gooseleverage.gfx.GfxManager;
 
 @SuppressWarnings("serial")
 public final class GooseLeverage extends Canvas {
@@ -29,7 +32,7 @@ public final class GooseLeverage extends Canvas {
 	}
 	
 	public GooseLeverage(String title, int width, int height, int scale) {
-		setPreferredSize(new Dimensions(width * scale, height * scale));
+		setPreferredSize(new Dimension(width * scale, height * scale));
 		gfx = new GfxManager(width, height);
 		input = new InputManager();
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -77,10 +80,10 @@ public final class GooseLeverage extends Canvas {
 			long currentTime = System.nanoTime();
 			deltaU += (currentTime - initialTime) / timeU;
 			deltaF += (currentTime - initialTime) / timeF;
-			intitialTime = currentTime;
+			initialTime = currentTime;
 			
 			if (deltaU >= 1) {
-				update();
+				tick();
 				ticks++;
 				deltaU--;
 			}
