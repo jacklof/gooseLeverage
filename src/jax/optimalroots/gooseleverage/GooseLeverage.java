@@ -1,7 +1,10 @@
 package jax.optimalroots.gooseleverage;
 
 import java.awt.Canvas;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
@@ -21,7 +24,7 @@ public final class GooseLeverage extends Canvas {
 	private boolean isDebug;
 	
 	public static void main(String[] args) {
-		instance = new GooseLeverage('GOOSE LEVERAGE', 240, 160, 4);
+		instance = new GooseLeverage("GOOSE LEVERAGE", 240, 160, 4);
 		instance.run(60, 20);
 	}
 	
@@ -43,15 +46,58 @@ public final class GooseLeverage extends Canvas {
 	}
 	
 	private void tick() {
-		
+		// TODO
 	}
 	
 	private void draw() {
-		
+		// TODO
 	}
 	
 	private void render() {
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) { createBufferStrategy(3); return; }
 		
+		draw();
+		
+		Graphics g = bs.getDrawGraphics();
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+		g.dispose();
+		bs.show();
+	}
+	
+	private void run(int targetTps, int targetFps) {
+		long initialTime = System.nanoTime();
+		final double timeU = 1000000000 / targetTps;
+		final double timeF = 1000000000 / targetFps;
+		double deltaU = 0, deltaF = 0;
+		int ticks = 0, frames = 0;
+		long timer = System.currentTimeMillis();
+		
+		while (isRunning) {
+			long currentTime = System.nanoTime();
+			deltaU += (currentTime - initialTime) / timeU;
+			deltaF += (currentTime - initialTime) / timeF;
+			intitialTime = currentTime;
+			
+			if (deltaU >= 1) {
+				update();
+				ticks++;
+				deltaU--;
+			}
+			
+			if (deltaF >= 1) {
+				render();
+				frames++;
+				deltaF--;
+			}
+			
+			if (System.currentTimeMillis() - timer > 1000) {
+				System.out.println(String.format("TpS: %s, Fps: %s", ticks, frames));
+				ticks = 0;
+				frames = 0;
+				timer += 1000;
+			}
+		}
 	}
 	
 }
